@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <header class="section-navbar">
+    <div class="container">
+      <div class="navbar-brand"> 
+        <a href="Index.html">
+          <img src="Images/logow.png" alt="LOGO" width="25%">
+        </a>
+      </div>
+      <nav class="navbar">
+        <ul>
+          <li class="nav-item"><a class="nav-link" href="Index.html">Home</a></li>
+          <li class="nav-item"> <a  class="nav-link" href="/"> about </a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="addToCart.html" id="cartValue" style="border: cornsilk; border-radius: 5px;">
+            <i class="fa-solid fa-cart-shopping">0</i>
+          </a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="cart-container" style="max-width:900px;margin:40px auto;padding:20px;">
+    <h1>Your Shopping Cart</h1>
+    <div id="cartItems"></div>
+    <div class="totals" style="margin-top:20px;font-weight:bold;">
+      Total Items: <span id="totalItems">0</span>  
+      | Total Price: ₹<span id="totalPrice">0</span>
+    </div>
+  </div>
+
+  <footer>
+      <div class="footer_container">
+        <div class="footer_column">
+        <h3>Electronic Gadgets</h3>
+            <a href="#">Phones</a>
+            <a href="#">Laptops</a>
+            <a href="#">Headphones</a>
+            <a href="#">Television</a>
+            <a href="#">Fridges</a>
+            <a href="#">Coolers</a>
+            <a href="#">Tabs</a>
+            </div>
+            
+            <div class="footer_column">
+                <h3>Assesories</h3>
+                    <a href="#">Protection Case</a>
+                    <a href="#">Screen Gard</a>
+                    <a href="#">Touch Pad</a>
+                    <a href="#">Chargers</a>
+                    <a href="#">Power Bank</a>
+                    <a href="#">LED's</a>
+                    <a href="#">Fan</a>
+                    </div>
+                   
+                    <div class="footer_column">
+                        <h3>ONLINE SHOPING</h3>
+                            <a href="#">Laptop Bags</a>
+                            <a href="#">Speakers</a>
+                            <a href="#">Covers</a>
+                            <a href="#">Toys</a>
+                            <a href="#">Headphones</a>
+                            <a href="#">Cleaner For Laptop</a>
+                            <a href="#">Quick Access To Gadgets</a>
+                            </div>
+                            
+
+        </div>
+        <hr>
+        <div class="copyright">
+            © 2025 www.quickshopee.com. All rights reserved.
+        </div>
+
+
+
+   </footer>
+ 
+
+  <script type="module">
+    import { updateCartCount } from './homeProductsCards.js';
+
+    function loadCart() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const cartContainer = document.getElementById("cartItems");
+      let totalItems = 0;
+      let totalPrice = 0;
+
+      cartContainer.innerHTML = "";
+
+      if (cart.length === 0) {
+        cartContainer.innerHTML = `<p style="text-align:center;color:#777;">Your cart is empty.</p>`;
+      } else {
+        cart.forEach(item => {
+          totalItems += item.quantity;
+          totalPrice += item.price * item.quantity;
+
+          cartContainer.innerHTML += `
+            <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;padding:10px;margin-bottom:10px;">
+              <img src="${item.image}" alt="${item.name}" style="width:80px;">
+              <h3>${item.name}</h3>
+              <div>
+                <button onclick="changeQty(${item.id}, -1)">-</button>
+                <span>${item.quantity}</span>
+                <button onclick="changeQty(${item.id}, 1)">+</button>
+              </div>
+              <p>₹${item.price * item.quantity}</p>
+              <button onclick="removeItem(${item.id})">Remove</button>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById("totalItems").textContent = totalItems;
+      document.getElementById("totalPrice").textContent = totalPrice;
+      updateCartCount();
+    }
+
+    window.changeQty = (id, change) => {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let product = cart.find(p => p.id === id);
+      if (product) {
+        product.quantity += change;
+        if (product.quantity < 1) product.quantity = 1;
+      }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    };
+
+    window.removeItem = (id) => {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart = cart.filter(p => p.id !== id);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    };
+
+    loadCart();
+  </script>
+
+</body>
+</html>
